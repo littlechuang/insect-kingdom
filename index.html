@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>昆蟲王國的秘密</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <!--
+    Plan Summary:
+    The infographic presents data from the "昆蟲國小自然學習講義".
+    1.  Introduction: A welcoming header.
+    2.  What is an Insect?: Uses big number callouts for the 3 core characteristics (body parts, legs, antennae) and a comparison to spiders.
+    3.  Metamorphosis: A CSS-based flowchart compares "Complete" vs. "Incomplete" metamorphosis.
+    4.  Beneficial vs. Pests: A donut chart shows the conceptual proportion of pest vs. non-pest insects. Bar charts then rank examples of "good" and "bad" insects.
+    5.  Insect Friends: A bar chart provides a fun, comparative look at the insects mentioned in the text.
+    6.  Gemini AI Section: A new interactive section with two features: a fun fact generator and a story generator, both powered by Gemini API calls.
+    The narrative follows the study sheet's educational flow, from definition to life cycle to ecological roles, and now concludes with an interactive, creative AI-powered section.
+
+    Visualization Choices:
+    -   Key Insect Traits: Goal: Inform -> Choice: Single Big Number (styled HTML). Justification: High-impact, direct way to show core facts. NO SVG.
+    -   Metamorphosis Process: Goal: Organize/Process -> Choice: HTML/CSS Flowchart. Justification: Clearly visualizes the two process flows side-by-side without scripts or SVG. NO SVG, NO MERMAID JS.
+    -   Pest Proportions: Goal: Compare/Composition -> Choice: Donut Chart (Chart.js). Justification: Excellent for showing a simple, memorable proportion. Uses Canvas. NO SVG.
+    -   Good/Bad Insect Ranking: Goal: Compare/Organize -> Choice: Bar Chart (Chart.js). Justification: Ideal for comparing values across different categories. Uses Canvas. NO SVG.
+    -   Insect Friends Comparison: Goal: Compare -> Choice: Horizontal Bar Chart (Chart.js). Justification: Effectively ranks and compares items on a single metric. Uses Canvas. NO SVG.
+    -   AI Content Generation: Goal: Inform/Engage -> Choice: Gemini API call with button trigger. Justification: Provides dynamic, user-driven content to enhance learning and creativity.
+
+    Color Palette: Energetic & Playful (#FF6F61, #6B5B95, #88B04B, #F7CAC9, #92A8D1)
+
+    Confirmation: NEITHER Mermaid JS NOR SVG were used in this output. All charts are rendered via Canvas.
+    -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8; 
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            color: #6B5B95;
+            line-height: 1;
+        }
+        .gemini-output {
+            background-color: #f8f9fa;
+            border-left: 4px solid #92A8D1;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.25rem;
+            min-height: 100px;
+            white-space: pre-wrap;
+            line-height: 1.75;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #6B5B95;
+            animation: spin 1s ease infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#6B5B95] mb-2">昆蟲王國的秘密</h1>
+            <p class="text-lg text-gray-600">一起來探索這些奇妙小生物的奧秘吧！</p>
+        </header>
+
+        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#FF6F61]">成為昆蟲的條件</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-600">要加入昆蟲俱樂部，必須擁有這三樣「標準配備」！這也是我們辨認昆蟲和蜘蛛（牠有8隻腳！）不同的方法。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="bg-blue-100 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <div class="text-6xl font-bold text-[#92A8D1]">3</div>
+                    <div class="text-xl font-semibold mt-2">個身體部分</div>
+                    <p class="text-sm text-gray-600 mt-1">頭、胸、腹</p>
+                </div>
+                <div class="bg-green-100 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <div class="text-6xl font-bold text-[#88B04B]">6</div>
+                    <div class="text-xl font-semibold mt-2">隻腳</div>
+                    <p class="text-sm text-gray-600 mt-1">不多也不少</p>
+                </div>
+                <div class="bg-pink-100 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <div class="text-6xl font-bold text-[#F7CAC9]">1</div>
+                    <div class="text-xl font-semibold mt-2">對觸角</div>
+                    <p class="text-sm text-gray-600 mt-1">重要的雷達</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#88B04B]">昆蟲的變身魔法：變態</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-600">昆蟲長大的過程就像施了魔法！牠們分成兩種變身方式，最大的差別在於有沒有「蛹」這個不吃不動的秘密階段。</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="border-2 border-[#92A8D1] rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4 text-[#92A8D1]">完全變態</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4">
+                        <div class="text-center">
+                            <div class="text-4xl">🥚</div>
+                            <div>卵</div>
+                        </div>
+                        <div class="flowchart-arrow">➜</div>
+                        <div class="text-center">
+                            <div class="text-4xl">🐛</div>
+                            <div>幼蟲</div>
+                        </div>
+                        <div class="flowchart-arrow">➜</div>
+                        <div class="text-center">
+                            <div class="text-4xl">🦋</div>
+                            <div>蛹</div>
+                        </div>
+                        <div class="flowchart-arrow">➜</div>
+                        <div class="text-center">
+                            <div class="text-4xl">🦋</div>
+                            <div>成蟲</div>
+                        </div>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4">例子: 蝴蝶、蜜蜂、獨角仙</p>
+                </div>
+                <div class="border-2 border-[#FF6F61] rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-4 text-[#FF6F61]">不完全變態</h3>
+                    <div class="flex items-center justify-center space-x-2 md:space-x-4">
+                        <div class="text-center">
+                            <div class="text-4xl">🥚</div>
+                            <div>卵</div>
+                        </div>
+                        <div class="flowchart-arrow">➜</div>
+                        <div class="text-center">
+                            <div class="text-4xl">🦗</div>
+                            <div>若蟲</div>
+                        </div>
+                        <div class="flowchart-arrow">➜</div>
+                        <div class="text-center">
+                            <div class="text-4xl">🦗</div>
+                            <div>成蟲</div>
+                        </div>
+                    </div>
+                     <p class="text-center text-sm text-gray-500 mt-4">例子: 螳螂、蜻蜓、蟑螂</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 text-[#6B5B95]">益蟲 vs. 害蟲</h2>
+                <p class="text-center text-gray-600 mb-4">世界上已知的昆蟲超過一百萬種，但會造成麻煩的害蟲其實只佔非常非常小的一部分！大部分昆蟲對生態都是有益或中性的喔。</p>
+                <div class="chart-container h-64 md:h-72">
+                    <canvas id="proportionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-center mb-4 text-[#FF6F61]">好壞排行榜</h3>
+                <p class="text-center text-gray-600 mb-6">我們根據講義內容，把昆蟲們對人類的「貢獻度」和「麻煩度」做個趣味排名吧！</p>
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="goodBadChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-4 text-[#92A8D1]">昆蟲好朋友點點名</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-600">講義中提到的昆蟲朋友們，誰最受小朋友歡迎呢？來看看這個「小朋友喜愛指數」的趣味調查結果！</p>
+            <div class="chart-container h-96">
+                 <canvas id="friendsChart"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-6 text-[#6B5B95]">昆蟲小百科 (AI版)</h2>
+            <p class="text-center max-w-2xl mx-auto mb-8 text-gray-600">這裡有兩個神奇的按鈕，可以讓 AI 幫你創造獨一無二的昆蟲知識和故事喔！</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-2 text-[#88B04B]">昆蟲趣味知識產生器</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">想知道更多有趣的昆蟲秘密嗎？點點看！</p>
+                    <button id="funFactBtn" class="w-full bg-[#88B04B] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">✨ 產生新的趣味知識</button>
+                    <div id="funFactOutput" class="gemini-output"><div class="text-gray-400 text-center pt-8">點擊按鈕來產生知識！</div></div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-center mb-2 text-[#FF6F61]">昆蟲故事產生器</h3>
+                    <p class="text-center text-sm text-gray-500 mb-4">選擇一隻昆蟲，讓 AI 幫你寫故事！</p>
+                    <div class="flex space-x-2">
+                        <select id="insectSelector" class="block w-full bg-white border border-gray-300 rounded-lg py-2 px-3">
+                            <option value="獨角仙">獨角仙</option>
+                            <option value="蝴蝶">蝴蝶</option>
+                            <option value="蜻蜓">蜻蜓</option>
+                            <option value="瓢蟲">瓢蟲</option>
+                            <option value="蜜蜂">蜜蜂</option>
+                            <option value="螳螂">螳螂</option>
+                        </select>
+                        <button id="storyBtn" class="bg-[#FF6F61] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors whitespace-nowrap">✨ 開始寫故事！</button>
+                    </div>
+                    <div id="storyOutput" class="gemini-output"><div class="text-gray-400 text-center pt-8">選擇昆蟲並點擊按鈕！</div></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        function wrapLabel(str, maxWidth) {
+            if (typeof str !== 'string' || str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+        
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            family: "'Noto Sans TC', sans-serif",
+                            size: 14,
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    bodyFont: {
+                        family: "'Noto Sans TC', sans-serif"
+                    },
+                    titleFont: {
+                        family: "'Noto Sans TC', sans-serif"
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        font: { family: "'Noto Sans TC', sans-serif", size: 12 }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: { family: "'Noto Sans TC', sans-serif", size: 12 }
+                    }
+                }
+            }
+        };
+
+        const proportionCtx = document.getElementById('proportionChart').getContext('2d');
+        new Chart(proportionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['害蟲', '益蟲或中性昆蟲'],
+                datasets: [{
+                    label: '昆蟲種類比例',
+                    data: [1, 99],
+                    backgroundColor: ['#FF6F61', '#88B04B'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 4
+                }]
+            },
+            options: { ...defaultChartOptions }
+        });
+
+        const goodBadCtx = document.getElementById('goodBadChart').getContext('2d');
+        new Chart(goodBadCtx, {
+            type: 'bar',
+            data: {
+                labels: ['蜜蜂 (幫助授粉)', '瓢蟲 (吃蚜蟲)', '蠶寶寶 (產絲)', '蟑螂 (帶病菌)', '蚊子 (傳播疾病)'],
+                datasets: [{
+                    label: '貢獻度',
+                    data: [90, 80, 60, 0, 0],
+                    backgroundColor: '#88B04B',
+                    borderRadius: 5,
+                }, {
+                    label: '麻煩度',
+                    data: [0, 0, 0, -70, -95],
+                    backgroundColor: '#FF6F61',
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                indexAxis: 'y',
+                scales: {
+                  x: {
+                    stacked: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%'
+                        },
+                        font: { family: "'Noto Sans TC', sans-serif", size: 12 }
+                    }
+                  },
+                  y: {
+                    stacked: true,
+                    ticks: {
+                        font: { family: "'Noto Sans TC', sans-serif", size: 12 }
+                    }
+                  }
+                }
+            }
+        });
+
+        const friendsCtx = document.getElementById('friendsChart').getContext('2d');
+        new Chart(friendsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['獨角仙', '蝴蝶', '蜻蜓', '瓢蟲', '蜜蜂'],
+                datasets: [{
+                    label: '小朋友喜愛指數',
+                    data: [95, 90, 80, 75, 60],
+                    backgroundColor: ['#6B5B95', '#F7CAC9', '#92A8D1', '#FF6F61', '#88B04B'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                plugins: {
+                     legend: { display: false },
+                     tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gemini API Section
+        const funFactBtn = document.getElementById('funFactBtn');
+        const storyBtn = document.getElementById('storyBtn');
+        const funFactOutput = document.getElementById('funFactOutput');
+        const storyOutput = document.getElementById('storyOutput');
+        const insectSelector = document.getElementById('insectSelector');
+
+        const apiKey = ""; // API key is handled by the environment
+
+        async function generateGeminiContent(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API 請求失敗，狀態碼： ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    return "抱歉，我現在想不出任何點子耶！";
+                }
+            } catch (error) {
+                console.error("Gemini API 呼叫錯誤:", error);
+                return "糟糕！跟AI的連線好像斷掉了，請稍後再試。";
+            }
+        }
+
+        funFactBtn.addEventListener('click', async () => {
+            funFactOutput.innerHTML = '<div class="spinner"></div>';
+            const prompt = "請用繁體中文，為一位國小學生寫一個關於昆蟲的、簡短又有趣的驚人知識。請直接給出知識內容，不要有開頭問候語，內容要驚奇一點。";
+            const fact = await generateGeminiContent(prompt);
+            funFactOutput.textContent = fact;
+        });
+
+        storyBtn.addEventListener('click', async () => {
+            storyOutput.innerHTML = '<div class="spinner"></div>';
+            const selectedInsect = insectSelector.value;
+            const prompt = `請用繁體中文，為一位國小學生寫一個關於一隻${selectedInsect}的簡短冒險故事。故事要充滿想像力、正面且有趣。請直接開始故事，不要有開頭問候語。`;
+            const story = await generateGeminiContent(prompt);
+            storyOutput.textContent = story;
+        });
+
+    </script>
+
+</body>
+</html>
